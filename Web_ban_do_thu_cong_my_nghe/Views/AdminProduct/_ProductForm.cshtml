@@ -3,27 +3,113 @@
     var categories = ViewBag.Categories as IEnumerable<Web_ban_do_thu_cong_my_nghe.Data.Category> ?? Enumerable.Empty<Web_ban_do_thu_cong_my_nghe.Data.Category>();
 }
 
-<div class="mb-3">
-    <label asp-for="Name" class="form-label">Tên sản phẩm</label>
-    <input asp-for="Name" class="form-control" />
-    <span asp-validation-for="Name" class="text-danger"></span>
+<style>
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+        .form-label .required {
+            color: #dc3545;
+            font-weight: 700;
+        }
+
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.15);
+        }
+
+    .form-control-lg {
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .input-group-text {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        font-weight: 600;
+        border-radius: 0 8px 8px 0;
+    }
+
+    .preview-container {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border-radius: 12px;
+        padding: 2rem;
+        min-height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .preview-image {
+        max-height: 350px;
+        max-width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+    }
+
+        .preview-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+        }
+
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #667eea;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+</style>
+
+<div class="mb-4">
+    <label asp-for="Name" class="form-label">
+        Tên sản phẩm <span class="required">*</span>
+    </label>
+    <input asp-for="Name" class="form-control form-control-lg" placeholder="VD: Tranh sơn mài cao cấp..." />
+    <span asp-validation-for="Name" class="text-danger small"></span>
 </div>
-<div class="mb-3">
-    <label asp-for="Description" class="form-label">Mô tả</label>
-    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+
+<div class="mb-4">
+    <label asp-for="Description" class="form-label">Mô tả sản phẩm</label>
+    <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả chi tiết về sản phẩm, chất liệu, kích thước, đặc điểm..."></textarea>
 </div>
-<div class="row g-3">
+<div class="section-title">
+    <i class="fa fa-info-circle me-2"></i>Thông tin chi tiết
+</div>
+
+<div class="row g-4 mb-4">
     <div class="col-md-4">
-        <label asp-for="Price" class="form-label">Giá</label>
-        <input asp-for="Price" class="form-control" type="number" step="1000" min="0" />
-        <span asp-validation-for="Price" class="text-danger"></span>
+        <label asp-for="Price" class="form-label">
+            Giá bán <span class="required">*</span>
+        </label>
+        <div class="input-group">
+            <input asp-for="Price" class="form-control" type="number" step="1000" min="0" placeholder="0" />
+            <span class="input-group-text">VNĐ</span>
+        </div>
+        <span asp-validation-for="Price" class="text-danger small"></span>
     </div>
     <div class="col-md-4">
-        <label asp-for="Stock" class="form-label">Tồn kho</label>
-        <input asp-for="Stock" class="form-control" type="number" min="0" />
+        <label asp-for="Stock" class="form-label">Số lượng tồn kho</label>
+        <input asp-for="Stock" class="form-control" type="number" min="0" placeholder="0" />
+        <small class="form-text text-muted">Để trống nếu không giới hạn</small>
     </div>
     <div class="col-md-4">
-        <label asp-for="CategoryId" class="form-label">Danh mục</label>
+        <label asp-for="CategoryId" class="form-label">
+            Danh mục <span class="required">*</span>
+        </label>
         <select asp-for="CategoryId" class="form-select">
             <option value="">-- Chọn danh mục --</option>
             @foreach (var cat in categories)
@@ -33,7 +119,51 @@
         </select>
     </div>
 </div>
-<div class="mb-3 mt-3">
-    <label asp-for="ImageUrl" class="form-label">Ảnh (URL)</label>
-    <input asp-for="ImageUrl" class="form-control" />
+<div class="section-title">
+    <i class="fa fa-image me-2"></i>Hình ảnh sản phẩm
 </div>
+
+<div class="mb-4">
+    <label asp-for="ImageUrl" class="form-label">URL hình ảnh</label>
+    <input asp-for="ImageUrl"
+           class="form-control"
+           id="imageUrlInput"
+           placeholder="https://example.com/image.jpg"
+           oninput="previewImage(this.value)" />
+    <small class="form-text text-muted">
+        <i class="fa fa-info-circle me-1"></i>Nhập đường dẫn URL hoặc tải ảnh lên host bên ngoài
+    </small>
+</div>
+
+<div class="mb-4">
+    <label class="form-label">Xem trước</label>
+    <div class="preview-container">
+        <img id="imagePreview"
+             src="@(!string.IsNullOrWhiteSpace(Model?.ImageUrl) ? Model.ImageUrl : "https://via.placeholder.com/400x400/667eea/ffffff?text=Chưa+có+hình+ảnh")"
+             class="preview-image"
+             alt="Xem trước"
+             onerror="this.src='https://via.placeholder.com/400x400/667eea/ffffff?text=Lỗi+tải+ảnh'" />
+    </div>
+</div>
+
+<script>
+    function previewImage(url) {
+        const preview = document.getElementById('imagePreview');
+        if (url && url.trim() !== '') {
+            preview.src = url;
+            preview.onerror = function() {
+                this.src = 'https://via.placeholder.com/400x400/dc3545/ffffff?text=URL+không+hợp+lệ';
+            };
+        } else {
+            preview.src = 'https://via.placeholder.com/400x400/667eea/ffffff?text=Chưa+có+hình+ảnh';
+        }
+    }
+
+    // Auto preview on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlInput = document.getElementById('imageUrlInput');
+        if (urlInput && urlInput.value) {
+            previewImage(urlInput.value);
+        }
+    });
+</script>

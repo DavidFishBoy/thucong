@@ -3,15 +3,99 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<div class="card border-0 shadow-sm">
-    <div class="card-body">
-        <h2 class="h4 mb-4">Thêm sản phẩm</h2>
+<style>
+    .create-product-page {
+        padding: 1.5rem;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem;
+        color: white;
+    }
+
+        .form-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-header p {
+            opacity: 0.95;
+            margin-bottom: 0;
+        }
+
+    .form-body {
+        padding: 2rem;
+    }
+
+    .btn-back {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-back:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108,117,125,0.3);
+            color: white;
+        }
+
+    .btn-save {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(102,126,234,0.4);
+            color: white;
+        }
+
+    .form-footer {
+        padding: 1.5rem 2rem;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+    }
+</style>
+
+<div class="create-product-page">
+    <div class="form-card">
+        <div class="form-header">
+            <h2><i class="fa fa-plus-circle me-2"></i>Thêm sản phẩm mới</h2>
+            <p>Điền đầy đủ thông tin sản phẩm vào form bên dưới</p>
+        </div>
         <form asp-action="Create" method="post">
             @Html.AntiForgeryToken()
-            @await Html.PartialAsync("_ProductForm", Model)
-            <div class="d-flex justify-content-between mt-4">
-                <a asp-action="Index" class="btn btn-link">Quay lại</a>
-                <button type="submit" class="btn btn-primary">Lưu</button>
+            <div class="form-body">
+                @await Html.PartialAsync("_ProductForm", Model)
+            </div>
+            <div class="form-footer d-flex justify-content-between align-items-center">
+                <a asp-action="Index" class="btn-back">
+                    <i class="fa fa-arrow-left me-2"></i>Quay lại danh sách
+                </a>
+                <button type="submit" class="btn-save">
+                    <i class="fa fa-save me-2"></i>Lưu sản phẩm
+                </button>
             </div>
         </form>
     </div>

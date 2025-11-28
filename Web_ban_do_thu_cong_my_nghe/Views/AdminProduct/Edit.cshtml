@@ -3,16 +3,100 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<div class="card border-0 shadow-sm">
-    <div class="card-body">
-        <h2 class="h4 mb-4">Cập nhật sản phẩm</h2>
+<style>
+    .edit-product-page {
+        padding: 1.5rem;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        padding: 2rem;
+        color: white;
+    }
+
+        .form-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-header p {
+            opacity: 0.95;
+            margin-bottom: 0;
+        }
+
+    .form-body {
+        padding: 2rem;
+    }
+
+    .btn-back {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-back:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108,117,125,0.3);
+            color: white;
+        }
+
+    .btn-update {
+        background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        color: #155724;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-update:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(132,250,176,0.4);
+            color: #155724;
+        }
+
+    .form-footer {
+        padding: 1.5rem 2rem;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+    }
+</style>
+
+<div class="edit-product-page">
+    <div class="form-card">
+        <div class="form-header">
+            <h2><i class="fa fa-edit me-2"></i>Cập nhật sản phẩm</h2>
+            <p>Chỉnh sửa thông tin sản phẩm #@Model.Id - @Model.Name</p>
+        </div>
         <form asp-action="Edit" method="post">
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="Id" />
-            @await Html.PartialAsync("_ProductForm", Model)
-            <div class="d-flex justify-content-between mt-4">
-                <a asp-action="Index" class="btn btn-link">Quay lại</a>
-                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+            <div class="form-body">
+                @await Html.PartialAsync("_ProductForm", Model)
+            </div>
+            <div class="form-footer d-flex justify-content-between align-items-center">
+                <a asp-action="Index" class="btn-back">
+                    <i class="fa fa-arrow-left me-2"></i>Quay lại danh sách
+                </a>
+                <button type="submit" class="btn-update">
+                    <i class="fa fa-check-circle me-2"></i>Lưu thay đổi
+                </button>
             </div>
         </form>
     </div>

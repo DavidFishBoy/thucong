@@ -83,13 +83,12 @@ namespace Web_ban_do_thu_cong_my_nghe.Controllers
         }
 
         
-        [Authorize(Roles = "Admin")] 
-        public async Task<IActionResult> Index()
+        [Authorize(Roles = "Admin")]
+        public IActionResult Index()
         {
-            
-            var users = await _db.Users.ToListAsync();
-            return View(users); 
+            return RedirectToAction("Dashboard");
         }
+        
         
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Dashboard()
@@ -118,7 +117,7 @@ namespace Web_ban_do_thu_cong_my_nghe.Controllers
             var unitsSold = await _db.OrderDetails.SumAsync(od => (int?)od.Quantity) ?? 0;
             var productCount = await _db.Products.CountAsync();
             var categoryCount = await _db.Categories.CountAsync();
-            var staffCount = await _db.NhanViens.CountAsync();
+            var staffCount = await _db.Users.CountAsync(u => u.Role == "Staff" || u.Role == "Admin");
             var customerCount = await _db.Users.CountAsync(u => u.Role == "Customer");
             var pendingOrders = await _db.Orders.CountAsync(o => o.Status == OrderStatusHelper.Pending);
             var shippingOrders = await _db.Orders.CountAsync(o => o.Status == OrderStatusHelper.Shipping);

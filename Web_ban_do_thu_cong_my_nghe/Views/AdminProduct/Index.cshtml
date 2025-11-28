@@ -3,76 +3,314 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h2 class="h4 mb-1">Quản lý sản phẩm</h2>
-        <p class="text-muted mb-0">Theo dõi, thêm mới và chỉnh sửa sản phẩm trong cửa hàng.</p>
-    </div>
-    <div>
-        <a asp-action="Create" class="btn btn-primary"><i class="fa fa-plus me-2"></i>Thêm sản phẩm</a>
-    </div>
-</div>
+<style>
+    .product-page {
+        padding: 1.5rem;
+    }
 
-@if (TempData["StatusMessage"] is string status && !string.IsNullOrWhiteSpace(status))
-{
-    <div class="alert alert-success">@status</div>
-}
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        color: white;
+    }
 
-<div class="card border-0 shadow-sm">
-    <div class="table-responsive">
-        <table class="table table-hover mb-0">
-            <thead class="table-light">
-                <tr>
-                    <th>ID</th>
-                    <th>Tên</th>
-                    <th>Danh mục</th>
-                    <th>Giá</th>
-                    <th>Tồn kho</th>
-                    <th>Cập nhật</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var product in Model)
-                {
+        .page-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            opacity: 0.95;
+            margin-bottom: 0;
+        }
+
+    .btn-add-product {
+        background: white;
+        color: #667eea;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+        .btn-add-product:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            color: #667eea;
+        }
+
+    .product-table-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .product-table {
+        margin-bottom: 0;
+    }
+
+        .product-table thead {
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+            .product-table thead th {
+                font-weight: 600;
+                color: #495057;
+                text-transform: uppercase;
+                font-size: 0.75rem;
+                letter-spacing: 0.5px;
+                padding: 1rem;
+                border: none;
+            }
+
+        .product-table tbody tr {
+            border-bottom: 1px solid #f1f3f5;
+            transition: all 0.2s ease;
+        }
+
+            .product-table tbody tr:hover {
+                background-color: #f8f9fa;
+                transform: scale(1.001);
+            }
+
+        .product-table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+    .product-img {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+        .product-img:hover {
+            transform: scale(1.1);
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+    .product-name {
+        font-weight: 600;
+        color: #212529;
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .product-desc {
+        color: #6c757d;
+        font-size: 0.8rem;
+        max-width: 350px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .category-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .price-text {
+        font-weight: 700;
+        color: #28a745;
+        font-size: 1rem;
+    }
+
+    .stock-badge {
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .stock-low {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .stock-medium {
+        background-color: #ffc107;
+        color: #000;
+    }
+
+    .stock-high {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+            color: white;
+        }
+
+    .alert-success {
+        background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        color: #155724;
+        border: none;
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+    }
+</style>
+
+<div class="product-page">
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <div>
+            <h2>Quản lý sản phẩm</h2>
+            <p>Theo dõi, thêm mới và chỉnh sửa sản phẩm trong cửa hàng.</p>
+        </div>
+        <div>
+            <a asp-action="Create" class="btn-add-product">
+                <i class="fa fa-plus me-2"></i>Thêm sản phẩm mới
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["StatusMessage"] is string status && !string.IsNullOrWhiteSpace(status))
+    {
+        <div class="alert alert-success">
+            <i class="fa fa-check-circle me-2"></i>@status
+        </div>
+    }
+
+    <div class="product-table-card">
+        <div class="table-responsive">
+            <table class="product-table table">
+                <thead>
                     <tr>
-                        <td>@product.Id</td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="@(!string.IsNullOrWhiteSpace(product.ImageUrl) ? product.ImageUrl : "https://via.placeholder.com/60")" class="rounded me-3" width="60" height="60" style="object-fit:cover;" alt="@product.Name" />
-                                <div>
-                                    <strong>@product.Name</strong>
-                                    <div class="text-muted small">@product.Description</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>@product.Category?.Name</td>
-                        <td>@product.Price.ToString("N0") đ</td>
-                        <td>
-                            @if (product.Stock <= 5)
-                            {
-                                <span class="badge bg-danger">@product.Stock</span>
-                            }
-                            else if (product.Stock <= 20)
-                            {
-                                <span class="badge bg-warning text-dark">@product.Stock</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-success">@product.Stock</span>
-                            }
-                        </td>
-                        <td>@product.UpdatedAt?.ToString("dd/MM/yyyy")</td>
-                        <td class="text-end">
-                            <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-outline-secondary me-2">Sửa</a>
-                            <form asp-action="Delete" asp-route-id="@product.Id" method="post" class="d-inline" onsubmit="return confirm('Xác nhận xoá sản phẩm này?');">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Xoá</button>
-                            </form>
-                        </td>
+                        <th style="width: 60px;">ID</th>
+                        <th style="width: 40%;">Sản phẩm</th>
+                        <th>Danh mục</th>
+                        <th>Giá bán</th>
+                        <th class="text-center">Tồn kho</th>
+                        <th>Cập nhật</th>
+                        <th class="text-end" style="width: 200px;">Thao tác</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model)
+                    {
+                        <tr>
+                            <td>
+                                <span class="text-muted fw-semibold">#@product.Id</span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="@(!string.IsNullOrWhiteSpace(product.ImageUrl) ? product.ImageUrl : "https://via.placeholder.com/70")"
+                                         class="product-img"
+                                         alt="@product.Name" />
+                                    <div>
+                                        <div class="product-name">@product.Name</div>
+                                        <div class="product-desc">@product.Description</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="category-badge">@product.Category?.Name</span>
+                            </td>
+                            <td>
+                                <span class="price-text">@product.Price.ToString("N0") đ</span>
+                            </td>
+                            <td class="text-center">
+                                @if (product.Stock <= 5)
+                                {
+                                    <span class="stock-badge stock-low">@product.Stock</span>
+                                }
+                                else if (product.Stock <= 20)
+                                {
+                                    <span class="stock-badge stock-medium">@product.Stock</span>
+                                }
+                                else
+                                {
+                                    <span class="stock-badge stock-high">@product.Stock</span>
+                                }
+                            </td>
+                            <td>
+                                <span class="text-muted small">@product.UpdatedAt?.ToString("dd/MM/yyyy")</span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a asp-action="Edit" asp-route-id="@product.Id"
+                                       class="btn-edit"
+                                       title="Chỉnh sửa">
+                                        <i class="fa fa-edit me-1"></i>Sửa
+                                    </a>
+                                    <button type="button"
+                                            class="btn-delete"
+                                            onclick="confirmDelete(@product.Id)"
+                                            title="Xóa sản phẩm">
+                                        <i class="fa fa-trash me-1"></i>Xóa
+                                    </button>
+                                </div>
+                                <form id="delete-form-@product.Id" asp-action="Delete" asp-route-id="@product.Id" method="post" style="display: none;">
+                                    @Html.AntiForgeryToken()
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
+
 </div>
+
+<script>
+    function confirmDelete(productId) {
+        if (confirm('⚠️ Xác nhận xóa sản phẩm\n\nBạn có chắc chắn muốn xóa sản phẩm này?\nHành động này không thể hoàn tác!')) {
+            document.getElementById('delete-form-' + productId).submit();
+        }
+    }
+</script>
